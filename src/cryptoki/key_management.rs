@@ -4,23 +4,26 @@ use rand::{rngs::OsRng, Rng};
 
 use super::{
     bindings::{
-        CKM_AES_KEY_GEN, CKM_AES_KEY_WRAP, CKM_AES_KEY_WRAP_PAD, CKM_ECDSA_KEY_PAIR_GEN,
-        CKM_RSA_PKCS, CKM_RSA_PKCS_KEY_PAIR_GEN, CKR_ARGUMENTS_BAD, CKR_FUNCTION_NOT_SUPPORTED,
-        CKR_MECHANISM_INVALID, CKR_OK, CKR_VENDOR_DEFINED, CK_ATTRIBUTE_PTR, CK_BYTE_PTR,
-        CK_MECHANISM_PTR, CK_MECHANISM_TYPE, CK_OBJECT_HANDLE, CK_OBJECT_HANDLE_PTR, CK_RV,
-        CK_SESSION_HANDLE, CK_ULONG, CK_ULONG_PTR,
+        CKA_CLASS, CKM_AES_KEY_GEN, CKM_AES_KEY_WRAP, CKM_AES_KEY_WRAP_PAD, CKM_ECDSA_KEY_PAIR_GEN,
+        CKM_RSA_PKCS, CKM_RSA_PKCS_KEY_PAIR_GEN, CKO_PUBLIC_KEY, CKR_ARGUMENTS_BAD,
+        CKR_FUNCTION_NOT_SUPPORTED, CKR_MECHANISM_INVALID, CKR_OK, CKR_VENDOR_DEFINED,
+        CK_ATTRIBUTE_PTR, CK_ATTRIBUTE_TYPE, CK_BYTE_PTR, CK_MECHANISM_PTR, CK_MECHANISM_TYPE,
+        CK_OBJECT_HANDLE, CK_OBJECT_HANDLE_PTR, CK_RV, CK_SESSION_HANDLE, CK_ULONG, CK_ULONG_PTR,
     },
     internals::encryption::{
         compute_pkcs7_padded_ciphertext_size, decrypt, destructure_iv_ciphertext, encrypt_pad,
     },
     utils::FromPointer,
 };
-use crate::state::{
-    object::{
-        cryptoki_object::CryptokiObject, private_key_object::PrivateKeyObject,
-        secret_key_object::SecretKeyObject, template::Template,
+use crate::{
+    state::{
+        object::{
+            cryptoki_object::CryptokiObject, private_key_object::PrivateKeyObject,
+            secret_key_object::SecretKeyObject, template::Template,
+        },
+        StateAccessor,
     },
-    StateAccessor,
+    SESSIONS,
 };
 
 pub(crate) type Aes128CbcEnc = cbc::Encryptor<aes::Aes128>;
@@ -109,6 +112,22 @@ pub unsafe fn C_GenerateKeyPair(
 
     if mechanism.mechanism == CKM_RSA_PKCS_KEY_PAIR_GEN as CK_MECHANISM_TYPE {
         let state_accessor = StateAccessor::new();
+        let mut sessions = SESSIONS.write().unwrap();
+        let session = sessions
+            .as_mut()
+            .unwrap()
+            .get_session_mut(&hSession)
+            .unwrap();
+
+        let meesign_pubkey = session
+            .ephemeral_objects
+            .values()
+            .find(|obj| {
+                obj.get_attribute(CKA_CLASS as CK_ATTRIBUTE_TYPE).unwrap()
+                    == (CKO_PUBLIC_KEY as CK_ATTRIBUTE_TYPE).to_le_bytes().to_vec()
+            })
+            .expect("No public key found");
+
         let (private_key_handle, pubkey_handle) = match state_accessor.get_communicator_keypair(
             &hSession,
             &pub_key_template,

@@ -62,7 +62,7 @@ pub(crate) struct Session {
     key_pair: Option<(CK_OBJECT_HANDLE, CK_OBJECT_HANDLE)>,
 
     cryptoki_repo: Arc<dyn CryptokiRepo>,
-    ephemeral_objects: HashMap<Uuid, Arc<dyn CryptokiObject>>,
+    pub ephemeral_objects: HashMap<Uuid, Arc<dyn CryptokiObject>>,
 }
 
 #[derive(Clone)]
