@@ -46,7 +46,8 @@ pub unsafe fn C_Decrypt(
     pData: CK_BYTE_PTR,
     pulDataLen: CK_ULONG_PTR,
 ) -> CK_RV {
-    // TODO: use C_Encrypt instead of copy-and-paste
+    // TODO: refactor, and properly implement, right now the implementation is very unsafe!
+
     if pEncryptedData.is_null() || pulDataLen.is_null() {
         return CKR_ARGUMENTS_BAD as CK_RV;
     }

@@ -22,7 +22,6 @@ pub(crate) trait Token: Sync + Send {
     fn get_slot_info(&self) -> CK_SLOT_INFO;
 }
 
-// TODO: store other info, like group name?
 #[derive(Default)]
 pub(crate) struct MeesignToken {
     group_id: GroupId,

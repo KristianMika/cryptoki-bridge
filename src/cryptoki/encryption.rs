@@ -36,6 +36,7 @@ pub unsafe fn C_EncryptInit(
     let mechanism = unsafe { *pMechanism };
     // todo: support other algos
     match mechanism.mechanism as u32 {
+        // required by Softfido
         CKM_AES_ECB => {}
         _ => return CKR_MECHANISM_INVALID as CK_RV,
     };
@@ -70,6 +71,7 @@ pub unsafe fn C_Encrypt(
     pEncryptedData: CK_BYTE_PTR,
     pulEncryptedDataLen: CK_ULONG_PTR,
 ) -> CK_RV {
+    // TODO: refactor, and properly implement, right now the implementation is very unsafe!
     if pData.is_null() || pulEncryptedDataLen.is_null() {
         return CKR_ARGUMENTS_BAD as CK_RV;
     }

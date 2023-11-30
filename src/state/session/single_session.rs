@@ -44,8 +44,6 @@ pub(crate) struct Session {
     object_search_iterator: Option<ObjectSearchIterator>,
 
     // TODO: objects should be held by the token struct
-    // TODO: also store token ID
-    // TODO: RwLock
     handle_resolver: HandleResolver,
 
     // TODO: utilize token attribute

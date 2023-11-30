@@ -71,7 +71,6 @@ pub unsafe fn C_Sign(
     pSignature: CK_BYTE_PTR,
     pulSignatureLen: CK_ULONG_PTR,
 ) -> CK_RV {
-    // TODO: refactor to avoid multiple mut references
     if pulSignatureLen.is_null() {
         return CKR_ARGUMENTS_BAD as CK_RV;
     }
