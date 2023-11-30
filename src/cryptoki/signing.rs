@@ -20,6 +20,7 @@ use super::{
 /// * `hSession` - the session’s handle
 /// * `pMechanism` - points to the signature mechanism
 /// * `hKey` - handle of the signature key
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_SignInit(
     hSession: CK_SESSION_HANDLE,
@@ -63,6 +64,7 @@ pub unsafe fn C_SignInit(
 /// * `ulDataLen` - the length of the data
 /// * `pSignature` - points to the location that receives the signature
 /// * `pulSignatureLen` - points to the location that holds the length of the signature
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_Sign(
     hSession: CK_SESSION_HANDLE,

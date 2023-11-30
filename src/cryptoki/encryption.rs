@@ -22,6 +22,7 @@ use super::{
 /// * `hSession` - the session’s handle
 /// * `pMechanism` - points to the encryption mechanism
 /// * `hKey` - the handle of the encryption key
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_EncryptInit(
     hSession: CK_SESSION_HANDLE,
@@ -63,6 +64,7 @@ pub unsafe fn C_EncryptInit(
 /// * `ulDataLen` - the length in bytes of the data
 /// * `pEncryptedData` - points to the location that receives the encrypted data
 /// * `pulEncryptedDataLen` - points to the location that holds the length in bytes of the encrypted data
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_Encrypt(
     hSession: CK_SESSION_HANDLE,

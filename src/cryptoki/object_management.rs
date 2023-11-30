@@ -25,6 +25,7 @@ use super::{
 /// * `pTemplate` - points to the object’s template
 /// * `ulCount` - the number of attributes in the template
 /// * `phObject` - points to the location that receives the new object’s handle
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_CreateObject(
     hSession: CK_SESSION_HANDLE,
@@ -76,6 +77,7 @@ pub fn C_DestroyObject(hSession: CK_SESSION_HANDLE, hObject: CK_OBJECT_HANDLE) -
 /// * `hObject` - the object’s handle
 /// * `pTemplate` - points to a template that specifies which attribute values are to be obtained, and receives the attribute values
 /// * `ulCount` - the number of attributes in the template
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_GetAttributeValue(
     hSession: CK_SESSION_HANDLE,
@@ -131,6 +133,7 @@ pub unsafe fn C_GetAttributeValue(
 /// * `pTemplate` - points to a search template that specifies the attribute values to match
 /// * `ulCount` - the number of attributes in the search template. If 0, find all objects
 ///
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_FindObjectsInit(
     hSession: CK_SESSION_HANDLE,
@@ -159,6 +162,7 @@ pub unsafe fn C_FindObjectsInit(
 /// * `phObject` - points to the location that receives the list (array) of additional object handles
 /// * `ulMaxObjectCount` - the maximum number of object handles to be returned
 /// * `pulObjectCount` - points to the location that receives the actual number of object handles returned
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_FindObjects(
     hSession: CK_SESSION_HANDLE,

@@ -36,6 +36,7 @@ pub(crate) const AES_IV_SIZE: usize = AES_BLOCK_SIZE;
 /// * `pTemplate` - points to the template for the new key or set of domain parameters
 /// * `ulCount` - the number of attributes in the template
 /// * `phKey` - points to the location that receives the handle of the new key or set of domain parameters
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_GenerateKey(
     hSession: CK_SESSION_HANDLE,
@@ -82,6 +83,7 @@ pub unsafe fn C_GenerateKey(
 /// * `ulPrivateKeyAttributeCount` - the number of attributes in the private-key template
 /// * `phPublicKey` - points to the location that receives the handle of the new public key
 /// * `phPrivateKey` - points to the location that receives the handle of the new private key
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_GenerateKeyPair(
     hSession: CK_SESSION_HANDLE,
@@ -122,6 +124,7 @@ pub unsafe fn C_GenerateKeyPair(
 /// * `hKey` - the handle of the key to be wrapped
 /// * `pWrappedKey` - points to the location that receives the wrapped key
 /// * `pulWrappedKeyLen` - points to the location that receives the length of the wrapped key
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_WrapKey(
     hSession: CK_SESSION_HANDLE,
@@ -192,6 +195,7 @@ pub unsafe fn C_WrapKey(
 /// * `pTemplate` - points to the template for the new key
 /// * `ulAttributeCount` - the number of attributes in the template
 /// * `phKey` - points to the location that receives the handle of the recovered key
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_UnwrapKey(
     hSession: CK_SESSION_HANDLE,

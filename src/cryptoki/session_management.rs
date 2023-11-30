@@ -14,6 +14,7 @@ use super::bindings::{
 /// * `pApplication` - an application-defined pointer to be passed to the notification callback
 /// * `Notify` - the address of the notification callback function
 /// * `phSession` - points to the location that receives the handle for the new session
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_OpenSession(
     slotID: CK_SLOT_ID,

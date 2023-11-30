@@ -62,6 +62,7 @@ pub fn C_Finalize(pReserved: CK_VOID_PTR) -> CK_RV {
 /// # Arguments
 ///
 /// * `pInfo` - points to the location that receives the information
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_GetInfo(pInfo: CK_INFO_PTR) -> CK_RV {
     if pInfo.is_null() {
@@ -91,6 +92,7 @@ pub unsafe fn C_GetInfo(pInfo: CK_INFO_PTR) -> CK_RV {
 /// # Arguments
 ///
 /// * `ppFunctionList` - points to a value which will receive a pointer to the library’s CK_FUNCTION_LIST structure
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_GetFunctionList(ppFunctionList: CK_FUNCTION_LIST_PTR_PTR) -> CK_RV {
     if ppFunctionList.is_null() {

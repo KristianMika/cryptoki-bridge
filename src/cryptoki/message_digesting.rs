@@ -17,6 +17,7 @@ use openssl::hash::{Hasher, MessageDigest};
 ///
 /// * `hSession` - the session’s handle
 /// * `pMechanism` - points to the digesting mechanism
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_DigestInit(hSession: CK_SESSION_HANDLE, pMechanism: CK_MECHANISM_PTR) -> CK_RV {
     if pMechanism.is_null() {
@@ -53,6 +54,7 @@ pub unsafe fn C_DigestInit(hSession: CK_SESSION_HANDLE, pMechanism: CK_MECHANISM
 /// * `ulDataLen` - the length of the data
 /// * `pDigest` - points to the location that receives the message digest
 /// * `pulDigestLen` - points to the location that holds the length of the message digest
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_Digest(
     hSession: CK_SESSION_HANDLE,

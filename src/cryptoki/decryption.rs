@@ -20,6 +20,7 @@ use super::{
 /// `hSession` - the session’s handle
 /// `pMechanism` - points to the decryption mechanism
 /// `hKey` - the handle of the decryption key
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_DecryptInit(
     hSession: CK_SESSION_HANDLE,
@@ -38,6 +39,7 @@ pub unsafe fn C_DecryptInit(
 /// * `ulEncryptedDataLen` - the length of the encrypted data
 /// * `pData` - points to the location that receives the recovered data
 /// * `pulDataLen` - points to the location that holds the length of the recovered data
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_Decrypt(
     hSession: CK_SESSION_HANDLE,

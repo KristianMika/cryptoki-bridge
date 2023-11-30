@@ -20,6 +20,7 @@ use super::bindings::{
 /// * `tokenPresent` - indicates whether the list obtained includes only those slots with a token present, or all slots
 /// * `pSlotList` - points to the buffer for the slot list
 /// * `pulCount` -  points to the location that receives the number of slots
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_GetSlotList(
     _tokenPresent: CK_BBOOL,
@@ -69,6 +70,7 @@ pub unsafe fn C_GetSlotList(
 ///
 /// * `slotID` - the ID of the token’s slot
 /// * `pInfo` - points to the location that receives the token information
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_GetTokenInfo(slotID: CK_SLOT_ID, pInfo: CK_TOKEN_INFO_PTR) -> CK_RV {
     if pInfo.is_null() {
@@ -91,6 +93,7 @@ pub unsafe fn C_GetTokenInfo(slotID: CK_SLOT_ID, pInfo: CK_TOKEN_INFO_PTR) -> CK
 ///
 /// * `slotID` - the ID of the slot
 /// * `pInfo` - points to the location that receives the slot information
+#[allow(clippy::missing_safety_doc)]
 #[cryptoki_macros::cryptoki_function]
 pub unsafe fn C_GetSlotInfo(slotID: CK_SLOT_ID, pInfo: CK_SLOT_INFO_PTR) -> CK_RV {
     if pInfo.is_null() {
