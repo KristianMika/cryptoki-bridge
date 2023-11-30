@@ -1,6 +1,6 @@
 [package]
 name = "cryptoki-bridge"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 description = "A PKCS#11 implementation that delegates tasks to a MeeSign server instance."
 authors = ["Kristian Mika <kristian.mika@protonmail.com>"]
