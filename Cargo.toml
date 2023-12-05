@@ -13,6 +13,7 @@ A PKCS#11 implementation that delegates tasks to a MeeSign server instance."""
 depends = "$auto"
 section = "utility"
 priority = "optional"
+revision = ""
 assets = [
     [
         "target/release/libcryptoki_bridge.so",
