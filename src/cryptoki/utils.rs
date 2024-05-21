@@ -12,6 +12,9 @@ pub unsafe trait FromPointer<T> {
 
 unsafe impl<T> FromPointer<T> for Vec<T> {
     unsafe fn from_pointer(pointer: *mut T, count: usize) -> Self {
+        if pointer.is_null() {
+            return Vec::new();
+        }
         let mut vector = Vec::with_capacity(count);
         unsafe {
             ptr::copy(pointer, vector.as_mut_ptr(), count);
