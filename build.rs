@@ -54,7 +54,7 @@ fn generate_bindings(header_location: PathBuf, header_file: &str) -> Result<(), 
         .clang_arg(format!("-I{}", header_location.to_str().unwrap()))
         // Tell cargo to invalidate the built crate whenever any of the
         // included header files changed.
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
         .generate()?;
 
     let out_dir = PathBuf::from(env::var("OUT_DIR")?);
