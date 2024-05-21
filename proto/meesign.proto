@@ -1,11 +1,12 @@
 syntax = "proto3";
 package meesign;
 
-service MPC {
+service MeeSign {
   rpc GetServerInfo(ServerInfoRequest) returns (ServerInfo);
   rpc Register(RegistrationRequest) returns (RegistrationResponse);
   rpc Sign(SignRequest) returns (Task);
   rpc Group(GroupRequest) returns (Task);
+  rpc Decrypt(DecryptRequest) returns (Task);
   rpc GetTask(TaskRequest) returns (Task);
   rpc UpdateTask(TaskUpdate) returns (Resp); // auth required
   rpc DecideTask(TaskDecision) returns (Resp); // auth required
@@ -25,22 +26,32 @@ message ServerInfo {
 
 enum ProtocolType {
   GG18 = 0;
+  ELGAMAL = 1;
+  FROST = 2;
 }
 
 enum KeyType {
   SignPDF = 0;
   SignChallenge = 1;
+  Decrypt = 2;
 }
 
 enum TaskType {
   GROUP = 0;
   SIGN_PDF = 1;
   SIGN_CHALLENGE = 2;
+  DECRYPT = 3;
+}
+
+enum DeviceKind {
+  USER = 0;
+  BOT = 1;
 }
 
 message RegistrationRequest {
   string name = 1;
-  bytes csr = 2; // CSR in DER format
+  DeviceKind kind = 2;
+  bytes csr = 3; // CSR in DER format
 }
 
 message RegistrationResponse {
@@ -54,6 +65,7 @@ message GroupRequest {
   uint32 threshold = 3;
   ProtocolType protocol = 4;
   KeyType key_type = 5;
+  optional string note = 6;
 }
 
 message Group {
@@ -63,6 +75,7 @@ message Group {
   ProtocolType protocol = 4;
   KeyType key_type = 5;
   repeated bytes device_ids = 6;
+  optional string note = 7;
 }
 
 message DevicesRequest {
@@ -76,14 +89,22 @@ message Devices {
 message Device {
   bytes identifier = 1;
   string name = 2;
-  bytes certificate = 3;
-  uint64 last_active = 4;
+  DeviceKind kind = 3;
+  bytes certificate = 4;
+  uint64 last_active = 5;
 }
 
 message SignRequest {
   string name = 1;
   bytes group_id = 2;
   bytes data = 3;
+}
+
+message DecryptRequest {
+  string name = 1;
+  bytes group_id = 2;
+  bytes data = 3;
+  string data_type = 4; // MIME type of the encrypted data
 }
 
 message TaskRequest {
@@ -105,13 +126,13 @@ message Task {
   uint32 attempt = 5;
   uint32 accept = 6; // Number of task accepts
   uint32 reject = 7; // Number of task rejects
-  optional bytes data = 8; // If present, the task is waiting for recipient's action
+  repeated bytes data = 8; // If present, the task is waiting for recipient's action; in case a given device controls multiple shares, multiple inputs are sent, ordered by share indices
   optional bytes request = 9; // Serialized SignRequest or TaskRequest; present only when queried directly
 }
 
 message TaskUpdate {
   bytes task = 1;
-  bytes data = 2;
+  repeated bytes data = 2; // In case a given device controls multiple shares, send responses ordered by share indices
   uint32 attempt = 3;
 }
 
@@ -149,19 +170,3 @@ message LogRequest {
 };
 
 message SubscribeRequest {};
-
-message GG18KeyGenInit {
-  uint32 index = 1;
-  uint32 parties = 2;
-  uint32 threshold = 3;
-}
-
-message GG18SignInit {
-  repeated uint32 indices = 1;
-  uint32 index = 2;
-  bytes hash = 3;
-}
-
-message GG18Message {
-  repeated bytes message = 1;
-}

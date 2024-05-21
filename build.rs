@@ -8,7 +8,7 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 
 static PROTO_INPUT_DIRECTORY: &str = "proto";
-static PROTO_INPUT_FILE: &str = "mpc.proto";
+static PROTO_INPUT_FILE: &str = "meesign.proto";
 static PKCS_11_SPEC_VERSION: &str = "v3.0";
 static PKCS_11_HEADERS_DIRECTORY: &str = "PKCS11-SPECS";
 static PKCS_11_WRAPPER_HEADER: &str = "wrapper.h";

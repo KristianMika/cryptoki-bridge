@@ -10,7 +10,7 @@ use tonic::{
 
 use std::{str::FromStr, time::Duration};
 
-use crate::communicator::meesign::proto::{mpc_client::MpcClient, GroupsRequest, KeyType};
+use crate::communicator::meesign::proto::{mee_sign_client::MeeSignClient, GroupsRequest, KeyType};
 use crate::communicator::AuthResponse;
 
 use self::proto::{task::TaskState, SignRequest, TaskRequest};
@@ -24,7 +24,7 @@ static ATTEMPT_SLEEP_SEC: u64 = 3;
 
 /// Communicates with the MeeSign server
 pub(crate) struct Meesign {
-    client: MpcClient<Channel>,
+    client: MeeSignClient<Channel>,
 }
 
 impl Meesign {
@@ -41,7 +41,7 @@ impl Meesign {
             .tls_config(client_tls_config)?
             .connect()
             .await?;
-        let client = MpcClient::new(channel);
+        let client = MeeSignClient::new(channel);
         Ok(Self { client })
     }
 }
@@ -90,7 +90,7 @@ impl Communicator for Meesign {
             });
             let response = self.client.get_task(request).await?;
             if response.get_ref().state == TaskState::Finished as i32 {
-                return Ok(response.get_ref().data.to_owned());
+                return Ok(response.get_ref().data.get(0).cloned());
             }
             if response.get_ref().state == TaskState::Failed as i32 {
                 return Err(CommunicatorError::TaskFailed);
