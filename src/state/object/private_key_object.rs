@@ -78,10 +78,6 @@ impl CryptokiObject for PrivateKeyObject {
         &self.id
     }
 
-    fn into_attributes(self) -> Attributes {
-        self.attributes
-    }
-
     fn get_attributes(&self) -> &Attributes {
         &self.attributes
     }

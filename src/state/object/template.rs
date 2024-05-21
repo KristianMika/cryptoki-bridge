@@ -27,9 +27,7 @@ impl Template {
     }
 
     pub(crate) fn get_class(&self) -> Option<ObjectClass> {
-        let Some(value) = self.get_value(&(CKA_CLASS as CK_ATTRIBUTE_TYPE)) else {
-            return None;
-        };
+        let value = self.get_value(&(CKA_CLASS as CK_ATTRIBUTE_TYPE))?;
         ObjectClass::from_vec(&value)
     }
 

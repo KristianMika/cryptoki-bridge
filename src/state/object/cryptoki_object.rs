@@ -29,6 +29,7 @@ pub(crate) trait CryptokiObject: Sync + Send {
         Self: Sized;
 
     fn get_attribute(&self, attribute_type: CK_ATTRIBUTE_TYPE) -> Option<AttributeValue>;
+    #[allow(dead_code)]
     fn set_attribute(
         &mut self,
         attribute_type: CK_ATTRIBUTE_TYPE,
@@ -37,7 +38,6 @@ pub(crate) trait CryptokiObject: Sync + Send {
 
     fn get_id(&self) -> &Uuid;
 
-    fn into_attributes(self) -> Attributes;
     fn get_attributes(&self) -> &Attributes;
 }
 
@@ -49,9 +49,7 @@ pub(crate) struct CryptokiArc {
 impl From<Template> for Option<CryptokiArc> {
     fn from(template: Template) -> Self {
         // TODO: refactor!!!!!
-        let Some(class) = template.get_class() else {
-            return None;
-        };
+        let class = template.get_class()?;
         match class {
             ObjectClass::Data => Some(CryptokiArc {
                 value: Arc::new(DataObject::from_template(template)),

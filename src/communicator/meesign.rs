@@ -90,7 +90,7 @@ impl Communicator for Meesign {
             });
             let response = self.client.get_task(request).await?;
             if response.get_ref().state == TaskState::Finished as i32 {
-                return Ok(response.get_ref().data.get(0).cloned());
+                return Ok(response.get_ref().data.first().cloned());
             }
             if response.get_ref().state == TaskState::Failed as i32 {
                 return Err(CommunicatorError::TaskFailed);

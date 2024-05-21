@@ -41,9 +41,7 @@ impl HandleResolver {
     }
 
     pub(crate) fn destroy_object_mapping(&self, handle: CK_OBJECT_HANDLE) -> Option<Uuid> {
-        let Some(uuid) = self.object_ids.remove(&handle).map(|(_, uuid)| uuid) else {
-            return None;
-        };
+        let uuid = self.object_ids.remove(&handle).map(|(_, uuid)| uuid)?;
         self.object_handles.remove(&uuid);
         Some(uuid)
     }
