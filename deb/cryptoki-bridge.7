@@ -1,0 +1,33 @@
+.Dd 7/7/24
+.Dt cryptoki-bridge 7
+.Os Debian
+.Sh NAME
+.Nm cryptoki-bridge
+.Nd PKCS #11 implementation that facilitates delegation to cryptographic threshold platforms.
+.Sh DESCRIPTION
+.Nm
+is a minimal PKCS #11 implementation that enables common PKCS #11 compatible applications to utilize threshold protocols. The library connects to a threshold platform, such as MeeSign, and delegates cryptographic operations requested by the application. The library emulates cryptographic tokens based on groups available on the platform and the user's configuration, all in a way that is transparent to the application.
+.Pp
+Bridge Controller is a GUI system tray application that allows user-friendly configuration of 
+.Nm
+library. It is available at 
+.Ar https://github.com/KristianMika/bridge-controller.
+.Sh ENVIRONMENT      
+.Bl -tag -width "COMMUNICATOR_CERTIFICATE_PATH" -indent
+.It Ev COMMUNICATOR_HOSTNAME
+Threshold platform instance, e.g., 
+.Ar meesign.crocs.fi.muni.cz
+(reguired).
+.It Ev COMMUNICATOR_CERTIFICATE_PATH
+Path to the platform CA's certificate, e.g.,
+.Ar /etc/ssl/certs/cacert/meesign-ca-cert.pem
+(required).
+.It Ev GROUP_ID
+Threshold group to be used. If unspecified, all groups are available (optional).
+.El
+.Sh FILES                \" File used or created by the topic of the man page
+.Bl -tag -width "/Users/joeuser/Library/really_long_file_name" -compact
+.It Pa /usr/lib/libcryptoki_bridge.so
+.Nm
+library file
+.El

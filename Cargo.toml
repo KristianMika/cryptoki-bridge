@@ -20,6 +20,11 @@ assets = [
         "usr/lib/libcryptoki_bridge.so",
         "755",
     ],
+    [
+        "deb/cryptoki-bridge.7",
+        "usr/share/man/man7/cryptoki-bridge.7",
+        "644",
+    ],
 ]
 
 [features]
