@@ -56,7 +56,7 @@ jobs:
         run: cargo clippy --all-targets -- -D warnings
 
       - name: Build
-        run: cargo build --verbose --features mocked_communicator
+        run: cargo build --verbose --features mocked_ecdsa_communicator
 
       - name: Install cargo-valgrind
         if: ${{ matrix.target == 'Linux' }}
@@ -64,11 +64,11 @@ jobs:
 
       - name: Run tests
         if: ${{ matrix.target == 'Windows' }}
-        run: cargo test --features mocked_communicator
+        run: cargo test --features mocked_ecdsa_communicator
       - name: Run tests
         if: ${{ matrix.target == 'Linux' }}
         # setting the limit for max # of FDs because of this bug https://bugs.kde.org/show_bug.cgi?id=465435
-        run: ulimit -n 1024 && cargo valgrind test --features mocked_communicator
+        run: ulimit -n 1024 && cargo valgrind test --features mocked_ecdsa_communicator
 
       - name: Upload cryptoki debug build
         uses: actions/upload-artifact@v4

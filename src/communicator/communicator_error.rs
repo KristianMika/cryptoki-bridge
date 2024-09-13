@@ -17,7 +17,7 @@ pub(crate) enum CommunicatorError {
     TaskTimedOut(WaitingTimeSeconds),
     #[error("I/O error occurred: {0}")]
     Io(#[from] std::io::Error),
-    #[cfg(feature = "mocked_communicator")]
+    #[cfg(feature = "mocked_ecdsa_communicator")]
     #[error("Cryptographic operation failed")]
     CryptographicError(#[from] p256::ecdsa::Error),
 }

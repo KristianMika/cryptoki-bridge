@@ -63,7 +63,7 @@ impl<S> From<PoisonError<S>> for CryptokiError {
 impl From<CommunicatorError> for CryptokiError {
     fn from(value: CommunicatorError) -> Self {
         match value {
-            #[cfg(feature = "mocked_communicator")]
+            #[cfg(feature = "mocked_ecdsa_communicator")]
             CommunicatorError::CryptographicError(_) => Self::FunctionFailed,
             CommunicatorError::Transport(_) => Self::TransportError,
             CommunicatorError::InvalidConfiguration(_) => Self::FunctionFailed,

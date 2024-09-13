@@ -429,7 +429,7 @@ impl StateAccessor {
         Ok(signer)
     }
 
-    #[cfg(not(feature = "mocked_communicator"))]
+    #[cfg(not(feature = "mocked_ecdsa_communicator"))]
     fn get_communicator(
         &self,
         configuration: &Arc<dyn ConfigurationProvider>,
@@ -449,14 +449,14 @@ impl StateAccessor {
         Ok(Box::new(meesign))
     }
 
-    #[cfg(feature = "mocked_communicator")]
+    #[cfg(feature = "mocked_ecdsa_communicator")]
     fn get_communicator(
         &self,
         _configuration: &Arc<dyn ConfigurationProvider>,
         _runtime: &Runtime,
     ) -> Result<Box<dyn Communicator>, CryptokiError> {
-        use crate::communicator::mocked_communicator::MockedMeesign;
-        let meesign = MockedMeesign::new("testgrp".into());
+        use crate::communicator::mocked_ecdsa_communicator::MockedEcdsaMeesign;
+        let meesign = MockedEcdsaMeesign::new("testgrp".into());
         Ok(Box::new(meesign))
     }
 }

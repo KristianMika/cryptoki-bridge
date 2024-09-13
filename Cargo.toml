@@ -29,7 +29,7 @@ assets = [
 
 [features]
 default = []
-mocked_communicator = ["dep:p256"]
+mocked_ecdsa_communicator = ["dep:p256"]
 
 [lib]
 name = "cryptoki_bridge"

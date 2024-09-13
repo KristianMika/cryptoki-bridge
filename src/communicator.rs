@@ -5,8 +5,8 @@ use self::{communicator_error::CommunicatorError, group::Group};
 pub(crate) mod communicator_error;
 pub(crate) mod group;
 pub(crate) mod meesign;
-#[cfg(all(feature = "mocked_communicator", debug_assertions))]
-pub(crate) mod mocked_communicator;
+#[cfg(all(feature = "mocked_ecdsa_communicator", debug_assertions))]
+pub(crate) mod mocked_ecdsa_communicator;
 pub(crate) mod task_name_provider;
 
 type ByteVector = Vec<u8>;
