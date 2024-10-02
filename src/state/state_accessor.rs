@@ -121,9 +121,8 @@ impl StateAccessor {
     pub(crate) fn initialize_state(&self) -> Result<(), CryptokiError> {
         ensure_file_structure()?;
 
-        let env_configuration = EnvConfiguration::new().map_err(|err| {
+        let env_configuration = EnvConfiguration::new().inspect_err(|_err| {
             eprintln!("Env configuration is not done properly. Please, consult the project documentation.");
-            err
         })?;
 
         let configuration: Arc<dyn ConfigurationProvider> = match env_configuration {
@@ -435,10 +434,9 @@ impl StateAccessor {
         configuration: &Arc<dyn ConfigurationProvider>,
         runtime: &Runtime,
     ) -> Result<Box<dyn Communicator>, CryptokiError> {
-        let configuration = configuration.get_interface_configuration().map_err(|err|{
+        let configuration = configuration.get_interface_configuration().inspect_err(|_err|{
             eprintln!("Couldn't get interface configuration. Either launch bridge controller, or provide appropriate ENV varriables.");
             eprintln!("In case bridge controller is running, make sure the interface is configured.");
-            err
         })?;
         let hostname = configuration.get_communicator_hostname().into();
         let certificate_path = configuration.get_communicator_certificate_path();
