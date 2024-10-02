@@ -1,3 +1,4 @@
+use prost::DecodeError;
 use thiserror::Error;
 use tonic::codegen::http::uri::InvalidUri;
 
@@ -20,4 +21,8 @@ pub(crate) enum CommunicatorError {
     #[cfg(feature = "mocked_ecdsa_communicator")]
     #[error("Cryptographic operation failed")]
     CryptographicError(#[from] p256::ecdsa::Error),
+    #[error("Authentication response wasn't present on the server")]
+    ResponseNotPresent,
+    #[error("Tonic proto message decoding failed: {0}")]
+    TonicDecodeError(DecodeError),
 }

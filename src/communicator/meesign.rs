@@ -2,6 +2,7 @@ mod proto {
     tonic::include_proto!("meesign");
 }
 
+use proto::Task;
 use tokio::time;
 use tonic::{
     async_trait,
@@ -19,8 +20,9 @@ use super::{
     Communicator, GroupId, RequestData, TaskId,
 };
 
-static MAX_ATTEMPT_COUNT: usize = 60 * 2 / ATTEMPT_SLEEP_SEC as usize;
-static ATTEMPT_SLEEP_SEC: u64 = 3;
+const MAX_WAITING_TIME_SEC: u64 = 120;
+const ATTEMPT_SLEEP_SEC: u64 = 3;
+const MAX_ATTEMPT_COUNT: usize = (MAX_WAITING_TIME_SEC / ATTEMPT_SLEEP_SEC) as usize;
 
 /// Communicates with the MeeSign server
 pub(crate) struct Meesign {
@@ -52,11 +54,11 @@ impl Communicator for Meesign {
         let request = tonic::Request::new(GroupsRequest { device_id: None });
 
         let response = self.client.get_groups(request).await?;
-        let groups = &response.get_ref().groups;
-        let groups = groups
-            .iter()
+        let proto_groups = response.into_inner().groups;
+        let groups = proto_groups
+            .into_iter()
             .filter(|group| group.key_type == KeyType::SignChallenge as i32)
-            .map(|group| Group::new(group.identifier.clone(), group.name.clone()))
+            .map(|group| Group::new(group.identifier, group.name))
             .collect();
         Ok(groups)
     }
@@ -69,37 +71,48 @@ impl Communicator for Meesign {
     ) -> Result<TaskId, CommunicatorError> {
         let task_name_provider = TaskNameProvider::new();
         let task_name = task_name_provider.get_task_name(request_originator);
-        let request = tonic::Request::new(SignRequest {
+        let sign_request = SignRequest {
             name: task_name,
             group_id,
             data,
-        });
-        let response = self.client.sign(request).await?;
+        };
+        let tonic_sign_request = tonic::Request::new(sign_request);
+        let response = self.client.sign(tonic_sign_request).await?;
 
-        Ok(response.get_ref().id.clone())
+        Ok(response.into_inner().id)
     }
 
     async fn get_auth_response(
         &mut self,
         task_id: TaskId,
-    ) -> Result<Option<AuthResponse>, CommunicatorError> {
+    ) -> Result<AuthResponse, CommunicatorError> {
+        let task_request = TaskRequest {
+            task_id,
+            device_id: None,
+        };
         for _attempt in 0..MAX_ATTEMPT_COUNT {
-            let request = tonic::Request::new(TaskRequest {
-                task_id: task_id.clone(),
-                device_id: None,
-            });
-            let response = self.client.get_task(request).await?;
-            if response.get_ref().state == TaskState::Finished as i32 {
-                return Ok(response.get_ref().data.first().cloned());
-            }
-            if response.get_ref().state == TaskState::Failed as i32 {
-                return Err(CommunicatorError::TaskFailed);
-            }
+            let tonic_task_request = tonic::Request::new(task_request.clone());
+            let response = self.client.get_task(tonic_task_request).await?;
+            let task = response.into_inner();
+            let task_state = task
+                .state
+                .try_into()
+                .map_err(CommunicatorError::TonicDecodeError)?;
+            match task_state {
+                TaskState::Finished => return extract_auth_response(task),
+                TaskState::Failed => return Err(CommunicatorError::TaskFailed),
+                _ => {}
+            };
             time::sleep(Duration::from_secs(ATTEMPT_SLEEP_SEC)).await;
         }
 
-        Err(CommunicatorError::TaskTimedOut(
-            (MAX_ATTEMPT_COUNT as u64) * ATTEMPT_SLEEP_SEC,
-        ))
+        Err(CommunicatorError::TaskTimedOut(MAX_WAITING_TIME_SEC))
+    }
+}
+
+fn extract_auth_response(task: Task) -> Result<AuthResponse, CommunicatorError> {
+    match task.data.into_iter().next() {
+        Some(val) => Ok(val),
+        None => Err(CommunicatorError::ResponseNotPresent),
     }
 }

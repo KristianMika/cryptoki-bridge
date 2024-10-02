@@ -65,7 +65,9 @@ impl Communicator for MockedEcdsaMeesign {
     async fn get_auth_response(
         &mut self,
         _task_id: TaskId,
-    ) -> Result<Option<AuthResponse>, CommunicatorError> {
-        Ok(self.signature.clone())
+    ) -> Result<AuthResponse, CommunicatorError> {
+        self.signature
+            .clone()
+            .ok_or(CommunicatorError::ResponseNotPresent)
     }
 }

@@ -71,6 +71,8 @@ impl From<CommunicatorError> for CryptokiError {
             CommunicatorError::TaskTimedOut(_) => Self::FunctionFailed,
             CommunicatorError::InvalidStatus(_) => Self::TransportError,
             CommunicatorError::Io(_) => Self::DeviceError,
+            CommunicatorError::ResponseNotPresent => Self::FunctionFailed,
+            CommunicatorError::TonicDecodeError(_decode_error) => Self::FunctionFailed,
         }
     }
 }

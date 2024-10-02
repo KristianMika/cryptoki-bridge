@@ -244,7 +244,7 @@ impl StateAccessor {
             communicator.get_auth_response(task_id).await
         })?;
 
-        response.ok_or(CryptokiError::FunctionFailed)
+        Ok(response)
     }
 
     pub(crate) fn store_signing_response(

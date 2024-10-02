@@ -46,5 +46,5 @@ pub(crate) trait Communicator: Send + Sync {
     async fn get_auth_response(
         &mut self,
         task_id: TaskId,
-    ) -> Result<Option<AuthResponse>, CommunicatorError>;
+    ) -> Result<AuthResponse, CommunicatorError>;
 }
