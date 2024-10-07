@@ -1,21 +1,19 @@
 {
-    "name": "Rust Box",
-    "runArgs": [
-        // "--privileged",
-        // "--network=host"
-    ],
+    "name": "Cryptoki Bridge Dev Box",
+    "runArgs": [],
     "build": {
         "dockerfile": "Dockerfile",
         "args": {}
     },
-    "settings": {},
-    "extensions": [
-        "rust-lang.rust-analyzer",
-        "serayuzgur.crates",
-        "usernamehw.errorlens"
-    ],
-    "mounts": [
-        // "source=/lib/modules,target=/lib/modules,type=bind,consistency=cached"
-    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "fill-labs.dependi",
+                "rust-lang.rust-analyzer",
+                "tamasfe.even-better-toml",
+                "usernamehw.errorlens"
+            ]
+        }
+    },
     "remoteUser": "dev"
 }

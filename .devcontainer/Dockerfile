@@ -17,13 +17,6 @@ RUN apt-get update && apt-get install --assume-yes \
     curl \
     unzip
 
-# install USB/IP
-# RUN apt-get install --assume-yes usbip hwdata usbutils libudev-dev
-
-# install requirements for intergration tests
-# RUN apt-get install --assume-yes opensc python3 python3-pip && \
-#     pip3 install --break-system-packages fido2==0.7
-
 # install protoc
 RUN curl -OL "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip" && \
     unzip -o "./protoc-${PROTOC_VERSION}-linux-x86_64.zip" -d ./proto && \
