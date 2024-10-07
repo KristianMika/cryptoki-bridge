@@ -6,6 +6,7 @@ use crate::cryptoki::bindings::CK_OBJECT_HANDLE;
 
 /// Holds handles for objects accessed with the session and maps them to their UUIDs.
 /// UUIDs are used to identify objects in the database, and persist across sessions.
+#[derive(Default)]
 pub(crate) struct HandleResolver {
     /// A map of UUID -> object handle
     object_handles: DashMap<Uuid, CK_OBJECT_HANDLE>,
@@ -15,13 +16,6 @@ pub(crate) struct HandleResolver {
 }
 
 impl HandleResolver {
-    pub(crate) fn new() -> Self {
-        Self {
-            object_handles: DashMap::new(),
-            object_ids: DashMap::new(),
-        }
-    }
-
     fn generate_object_handle(&self) -> CK_OBJECT_HANDLE {
         let mut object_handle = OsRng.gen_range(0..CK_OBJECT_HANDLE::MAX);
         while self.object_ids.contains_key(&object_handle) {

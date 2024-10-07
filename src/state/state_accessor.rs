@@ -14,6 +14,7 @@ use crate::{
     COMMUNICATOR, CONFIGURATION, RUNTIME, SESSIONS, SLOTS,
 };
 use aes::Aes128;
+use derive_new::new;
 use home::home_dir;
 use openssl::hash::Hasher;
 use std::{fs, path::PathBuf, sync::Arc};
@@ -28,13 +29,10 @@ use super::{
     session::single_session::Signer,
 };
 
+#[derive(new)]
 pub(crate) struct StateAccessor {}
 
 impl StateAccessor {
-    pub(crate) fn new() -> Self {
-        Self {}
-    }
-
     pub(crate) fn get_encryptor(
         &self,
         session_handle: &CK_SESSION_HANDLE,

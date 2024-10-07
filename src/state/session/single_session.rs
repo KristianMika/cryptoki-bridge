@@ -92,7 +92,7 @@ impl Session {
             object_search_iterator: None,
             key_pair: None,
             cryptoki_repo,
-            handle_resolver: HandleResolver::new(),
+            handle_resolver: HandleResolver::default(),
             ephemeral_objects: HashMap::new(),
         };
 

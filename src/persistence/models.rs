@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use derive_new::new;
 use rusqlite::Row;
 use uuid::Uuid;
 
@@ -13,6 +14,7 @@ use crate::utils::to_fixed_size_array;
 use super::persistence_error::PersistenceError;
 
 /// Represents a Cryptoki object of any class
+#[derive(new)]
 pub(crate) struct ObjectModel {
     /// A unique UUID which is used to assign handles
     pub id: Uuid,
@@ -45,20 +47,6 @@ impl ObjectModel {
             label: row.get(2)?,
             serialized_attributes: row.get(3)?,
         })
-    }
-
-    fn new(
-        id: Uuid,
-        class: ObjectClass,
-        label: Option<Vec<u8>>,
-        serialized_attributes: Vec<u8>,
-    ) -> Self {
-        Self {
-            id,
-            class,
-            label,
-            serialized_attributes,
-        }
     }
 }
 

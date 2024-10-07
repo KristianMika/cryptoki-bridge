@@ -1,3 +1,4 @@
+use derive_new::new;
 use serde::Deserialize;
 
 use crate::communicator::GroupId;
@@ -5,26 +6,14 @@ use crate::communicator::GroupId;
 use super::configuration_provider::controller_configuration::InterfaceConfigurationResponse;
 
 /// A model holding interface configuration attributes
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Clone, new)]
 pub(crate) struct InterfaceConfiguration {
     communicator_hostname: String,
-    communicator_certificate_path: String,
     group_id: Option<GroupId>,
+    communicator_certificate_path: String,
 }
 
 impl InterfaceConfiguration {
-    pub fn new(
-        communicator_hostname: String,
-        group_id: Option<GroupId>,
-        communicator_certificate_path: String,
-    ) -> Self {
-        Self {
-            communicator_hostname,
-            group_id,
-            communicator_certificate_path,
-        }
-    }
-
     pub fn get_communicator_hostname(&self) -> &str {
         &self.communicator_hostname
     }

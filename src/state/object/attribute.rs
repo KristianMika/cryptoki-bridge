@@ -1,9 +1,12 @@
+use derive_new::new;
+
 use crate::cryptoki::{
     bindings::{CK_ATTRIBUTE, CK_ATTRIBUTE_TYPE},
     utils::FromPointer,
 };
 use crate::state::object::cryptoki_object::AttributeValue;
 
+#[derive(new)]
 pub(crate) struct Attribute {
     attribute_type: CK_ATTRIBUTE_TYPE,
     value: Option<Vec<u8>>,
@@ -33,13 +36,6 @@ impl From<CK_ATTRIBUTE> for Attribute {
 }
 
 impl Attribute {
-    pub fn new(attribute_type: CK_ATTRIBUTE_TYPE, value: Option<Vec<u8>>) -> Self {
-        Self {
-            attribute_type,
-            value,
-        }
-    }
-
     pub fn from_parts(attribute_type: u32, attribute_value: impl ToAttributeValue) -> Self {
         let attribute_type = attribute_type as CK_ATTRIBUTE_TYPE;
         let value = Some(attribute_value.to_attribute_value());

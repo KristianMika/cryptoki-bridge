@@ -1,15 +1,14 @@
+use derive_new::new;
+
 use crate::configuration::EffectiveInterfaceType;
 
 use super::communicator_error::CommunicatorError;
 
 /// Provides names for tasks delegated to the communicator
+#[derive(new)]
 pub(crate) struct TaskNameProvider {}
 
 impl TaskNameProvider {
-    pub(crate) fn new() -> Self {
-        Self {}
-    }
-
     /// Returns a task name informing using which interface the authentication
     /// request was created with, which tool, and in some cases, for which domain.
     ///

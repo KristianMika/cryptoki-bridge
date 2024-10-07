@@ -1,6 +1,7 @@
 use aes::cipher::{
     block_padding::Pkcs7, generic_array::GenericArray, BlockDecryptMut, BlockEncryptMut, KeyIvInit,
 };
+use derive_new::new;
 use rand::{rngs::OsRng, Rng};
 
 use crate::cryptoki::{
@@ -53,16 +54,13 @@ pub(crate) unsafe fn destructure_iv_ciphertext(
     EncryptionOutput::new(ciphertext, iv)
 }
 
+#[derive(new)]
 pub struct EncryptionOutput {
     pub ciphertext: Vec<u8>,
     pub iv: Vec<u8>,
 }
 
 impl EncryptionOutput {
-    pub fn new(ciphertext: Vec<u8>, iv: Vec<u8>) -> Self {
-        Self { ciphertext, iv }
-    }
-
     pub fn into_combined(self) -> Vec<u8> {
         let mut ciphertext_with_iv = self.iv;
         ciphertext_with_iv.extend(self.ciphertext);
