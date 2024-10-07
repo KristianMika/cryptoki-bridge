@@ -72,7 +72,7 @@ impl From<CommunicatorError> for CryptokiError {
             CommunicatorError::InvalidStatus(_) => Self::TransportError,
             CommunicatorError::Io(_) => Self::DeviceError,
             CommunicatorError::ResponseNotPresent => Self::FunctionFailed,
-            CommunicatorError::TonicDecodeError(_decode_error) => Self::FunctionFailed,
+            CommunicatorError::TonicUnknownEnumValue(_) => Self::FunctionFailed,
         }
     }
 }

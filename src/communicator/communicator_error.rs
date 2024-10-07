@@ -1,4 +1,4 @@
-use prost::DecodeError;
+use prost::UnknownEnumValue;
 use thiserror::Error;
 use tonic::codegen::http::uri::InvalidUri;
 
@@ -23,6 +23,6 @@ pub(crate) enum CommunicatorError {
     CryptographicError(#[from] p256::ecdsa::Error),
     #[error("Authentication response wasn't present on the server")]
     ResponseNotPresent,
-    #[error("Tonic proto message decoding failed: {0}")]
-    TonicDecodeError(DecodeError),
+    #[error("Tonic proto unknown enum value: {0}")]
+    TonicUnknownEnumValue(UnknownEnumValue),
 }

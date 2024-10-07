@@ -97,7 +97,7 @@ impl Communicator for Meesign {
             let task_state = task
                 .state
                 .try_into()
-                .map_err(CommunicatorError::TonicDecodeError)?;
+                .map_err(CommunicatorError::TonicUnknownEnumValue)?;
             match task_state {
                 TaskState::Finished => return extract_auth_response(task),
                 TaskState::Failed => return Err(CommunicatorError::TaskFailed),

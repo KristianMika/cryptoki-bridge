@@ -34,7 +34,7 @@ fn compile_protofiles(
 
     tonic_build::configure()
         .build_server(false)
-        .compile(&[proto_input_filepath], &[proto_input_directory])?;
+        .compile_protos(&[proto_input_filepath], &[proto_input_directory])?;
     Ok(())
 }
 
