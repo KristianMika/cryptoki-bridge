@@ -1,10 +1,7 @@
 use std::{cmp::min, ptr};
 
 use crate::state::{
-    object::{
-        attribute::Attribute, cryptoki_object::CryptokiArc, object_search::ObjectSearch,
-        template::Template,
-    },
+    object::{Attribute, CryptokiArc, ObjectSearch, Template},
     StateAccessor,
 };
 

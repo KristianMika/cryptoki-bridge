@@ -1,6 +1,15 @@
+use std::{fs, path::PathBuf, sync::Arc};
+
+use aes::Aes128;
+use derive_new::new;
+use home::home_dir;
+use openssl::hash::Hasher;
+use tokio::runtime::Runtime;
+use tonic::transport::Certificate;
+
 use crate::{
     communicator::{
-        group::Group, meesign::Meesign, AuthResponse, Communicator, GroupId, RequestData, TaskId,
+        meesign::Meesign, AuthResponse, Communicator, GroupId, RequestData, TaskId, ThresholdGroup,
     },
     configuration::{
         ConfigurationProvider, ConfigurationProviderError, ControllerConfiguration,
@@ -9,24 +18,15 @@ use crate::{
     cryptoki::bindings::{
         CK_OBJECT_HANDLE, CK_SESSION_HANDLE, CK_SLOT_ID, CK_SLOT_INFO, CK_TOKEN_INFO,
     },
-    cryptoki_error::CryptokiError,
     persistence::SqliteCryptokiRepo,
-    COMMUNICATOR, CONFIGURATION, RUNTIME, SESSIONS, SLOTS,
+    CryptokiError, COMMUNICATOR, CONFIGURATION, RUNTIME, SESSIONS, SLOTS,
 };
-use aes::Aes128;
-use derive_new::new;
-use home::home_dir;
-use openssl::hash::Hasher;
-use std::{fs, path::PathBuf, sync::Arc};
-use tokio::runtime::Runtime;
-use tonic::transport::Certificate;
 
-use super::session::sessions::Sessions;
+use super::session::Sessions;
 use super::slots::{Slots, TokenStore};
-
 use super::{
-    object::{cryptoki_object::CryptokiObject, object_search::ObjectSearch},
-    session::single_session::Signer,
+    object::{CryptokiObject, ObjectSearch},
+    session::Signer,
 };
 
 #[derive(new)]
@@ -172,7 +172,7 @@ impl StateAccessor {
         session.get_hasher().ok_or(CryptokiError::FunctionFailed)
     }
 
-    pub(crate) fn get_groups_blocking(&self) -> Result<Vec<Group>, CryptokiError> {
+    pub(crate) fn get_groups_blocking(&self) -> Result<Vec<ThresholdGroup>, CryptokiError> {
         let runtime = RUNTIME.read()?;
         let runtime = runtime
             .as_ref()
@@ -187,8 +187,8 @@ impl StateAccessor {
 
     fn filter_groups_based_on_configuration(
         &self,
-        groups: Vec<Group>,
-    ) -> Result<Vec<Group>, CryptokiError> {
+        groups: Vec<ThresholdGroup>,
+    ) -> Result<Vec<ThresholdGroup>, CryptokiError> {
         let configuration = CONFIGURATION.read()?;
         let configuration = match configuration
             .as_ref()

@@ -1,6 +1,6 @@
 use std::ptr;
 
-use crate::state::{object::template::Template, session::single_session::Signer, StateAccessor};
+use crate::state::{object::Template, session::Signer, StateAccessor};
 const CKA_REQUEST_ORIGINATOR: CK_ATTRIBUTE_TYPE =
     (CKA_VENDOR_DEFINED as CK_ATTRIBUTE_TYPE) | 0x000000000000abcd;
 

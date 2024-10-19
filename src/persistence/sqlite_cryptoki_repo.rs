@@ -8,11 +8,7 @@ use uuid::Uuid;
 
 use crate::{
     cryptoki::bindings::{CKA_LABEL, CK_ATTRIBUTE_TYPE},
-    state::object::{
-        cryptoki_object::{AttributeValue, CryptokiObject},
-        object_class::ObjectClass,
-        object_search::ObjectSearch,
-    },
+    state::object::{AttributeValue, CryptokiObject, ObjectClass, ObjectSearch},
 };
 
 use super::{

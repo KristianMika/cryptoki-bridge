@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use uuid::Uuid;
 
-use crate::state::object::{cryptoki_object::CryptokiObject, object_search::ObjectSearch};
+use crate::state::object::{CryptokiObject, ObjectSearch};
 
 use super::persistence_error::PersistenceError;
 

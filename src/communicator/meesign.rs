@@ -1,7 +1,3 @@
-mod proto {
-    tonic::include_proto!("meesign");
-}
-
 use proto::Task;
 use tokio::time;
 use tonic::{
@@ -19,6 +15,10 @@ use super::{
     communicator_error::CommunicatorError, group::Group, task_name_provider::TaskNameProvider,
     Communicator, GroupId, RequestData, TaskId,
 };
+
+mod proto {
+    tonic::include_proto!("meesign");
+}
 
 const MAX_WAITING_TIME_SEC: u64 = 120;
 const ATTEMPT_SLEEP_SEC: u64 = 3;

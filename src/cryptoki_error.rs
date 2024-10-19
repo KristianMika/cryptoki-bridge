@@ -3,14 +3,14 @@ use std::{io, sync::PoisonError};
 use thiserror::Error;
 
 use crate::{
-    communicator::communicator_error::CommunicatorError,
+    communicator::CommunicatorError,
     configuration::ConfigurationProviderError,
     cryptoki::bindings::{
         CKR_CRYPTOKI_NOT_INITIALIZED, CKR_DEVICE_ERROR, CKR_FUNCTION_FAILED,
         CKR_FUNCTION_NOT_SUPPORTED, CKR_GENERAL_ERROR, CKR_OBJECT_HANDLE_INVALID,
         CKR_OPERATION_NOT_INITIALIZED, CKR_SESSION_HANDLE_INVALID, CKR_SLOT_ID_INVALID, CK_RV,
     },
-    persistence::persistence_error::PersistenceError,
+    persistence::PersistenceError,
 };
 
 #[derive(Debug, Error)]

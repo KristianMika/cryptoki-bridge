@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::cryptoki::bindings::{CKA_CLASS, CK_ATTRIBUTE, CK_ATTRIBUTE_TYPE};
 
-use super::{attribute::Attribute, cryptoki_object::Attributes, object_class::ObjectClass};
+use super::{cryptoki_object::Attributes, Attribute, ObjectClass};
 
 pub(crate) struct Template {
     attributes: HashMap<CK_ATTRIBUTE_TYPE, Option<Vec<u8>>>,

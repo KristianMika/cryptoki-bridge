@@ -11,21 +11,15 @@ use crate::{
         CKA_LABEL, CKA_VALUE, CKK_ECDSA, CKO_PRIVATE_KEY, CKO_PUBLIC_KEY, CK_FALSE,
         CK_OBJECT_HANDLE,
     },
-    cryptoki_error::CryptokiError,
-    persistence::{persistence_error::PersistenceError, CryptokiRepo},
+    persistence::{CryptokiRepo, PersistenceError},
     state::{
-        object::{
-            attribute::Attribute,
-            cryptoki_object::{AttributeValue, CryptokiObject},
-            object_search::ObjectSearch,
-            template::Template,
-        },
+        object::{Attribute, AttributeValue, CryptokiObject, ObjectSearch, Template},
         slots::TokenStore,
     },
-    utils::as_der_octet_string,
+    utils, CryptokiError,
 };
 
-use super::handle_resolver::HandleResolver;
+use super::HandleResolver;
 
 const NIST_P256_EC_PARAMS_DER_HEX: &str = "06082a8648ce3d030107";
 static KEYPAIR_IDENTIFIER_FROM_PUBLIC_PREFIX_LENGTH: usize = 8;
@@ -259,7 +253,7 @@ fn get_communicator_public_key_template(token_label: &str, public_key: Attribute
     let mut attributes = vec![
         Attribute::from_parts(CKA_KEY_TYPE, CKK_ECDSA),
         Attribute::from_parts(CKA_EC_PARAMS, ec_params),
-        Attribute::from_parts(CKA_EC_POINT, as_der_octet_string(&public_key)),
+        Attribute::from_parts(CKA_EC_POINT, utils::as_der_octet_string(&public_key)),
         Attribute::from_parts(CKA_CLASS, CKO_PUBLIC_KEY),
     ];
     attributes.append(&mut common_attributes);

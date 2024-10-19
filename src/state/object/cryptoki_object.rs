@@ -1,9 +1,8 @@
 use std::{collections::HashMap, sync::Arc};
 
 use crate::cryptoki::bindings::{CKA_VALUE, CK_ATTRIBUTE, CK_ATTRIBUTE_TYPE};
-use uuid::Uuid;
-
 use crate::persistence::models::ObjectModel;
+use uuid::Uuid;
 
 use super::template::Template;
 

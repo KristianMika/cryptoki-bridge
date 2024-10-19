@@ -1,3 +1,7 @@
+pub(crate) use sessions::Sessions;
+pub(crate) use single_session::Signer;
+
 mod handle_resolver;
-pub(crate) mod sessions;
-pub(crate) mod single_session;
+mod sessions;
+mod single_session;
+use handle_resolver::HandleResolver;

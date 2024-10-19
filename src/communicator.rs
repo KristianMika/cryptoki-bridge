@@ -1,9 +1,12 @@
 use tonic::async_trait;
 
-use self::{communicator_error::CommunicatorError, group::Group};
+use group::Group;
 
-pub(crate) mod communicator_error;
-pub(crate) mod group;
+pub(crate) use communicator_error::CommunicatorError;
+pub(crate) use group::Group as ThresholdGroup;
+
+mod communicator_error;
+mod group;
 pub(crate) mod meesign;
 #[cfg(all(feature = "mocked_ecdsa_communicator", debug_assertions))]
 pub(crate) mod mocked_ecdsa_communicator;

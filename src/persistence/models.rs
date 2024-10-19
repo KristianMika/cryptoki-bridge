@@ -8,8 +8,8 @@ use crate::cryptoki::bindings::{
     CKA_CLASS, CKA_LABEL, CKO_DATA, CKO_PRIVATE_KEY, CKO_PUBLIC_KEY, CKO_SECRET_KEY,
     CK_ATTRIBUTE_TYPE,
 };
-use crate::state::object::{cryptoki_object::CryptokiObject, object_class::ObjectClass};
-use crate::utils::to_fixed_size_array;
+use crate::state::object::{CryptokiObject, ObjectClass};
+use crate::utils;
 
 use super::persistence_error::PersistenceError;
 
@@ -67,7 +67,7 @@ pub(crate) fn try_object_model_from_cryptoki_object(
 pub(crate) fn try_object_class_from_cryptoki_object(
     value: &Arc<CryptokiObject>,
 ) -> Result<ObjectClass, PersistenceError> {
-    let class = CK_ATTRIBUTE_TYPE::from_le_bytes(to_fixed_size_array(
+    let class = CK_ATTRIBUTE_TYPE::from_le_bytes(utils::to_fixed_size_array(
         value.get_attribute(CKA_CLASS as CK_ATTRIBUTE_TYPE).ok_or(
             PersistenceError::DataInconsistency(format!(
                 "Object {id} does not have a class attribute",

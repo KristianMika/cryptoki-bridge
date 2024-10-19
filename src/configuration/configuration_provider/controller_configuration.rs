@@ -1,7 +1,7 @@
 mod interface_configuration_response;
 
 use crate::{
-    communicator::task_name_provider::get_binary_name,
+    communicator::task_name_provider,
     configuration::{interface_configuration::InterfaceConfiguration, EffectiveInterfaceType},
 };
 
@@ -24,7 +24,7 @@ pub(crate) struct ControllerConfiguration {
 impl ControllerConfiguration {
     pub(crate) fn new() -> Self {
         let effective_interface_type = EffectiveInterfaceType::from_environment();
-        let tool_name = get_binary_name().unwrap_or(None);
+        let tool_name = task_name_provider::get_binary_name().unwrap_or(None);
         Self {
             effective_interface_type,
             tool_name,

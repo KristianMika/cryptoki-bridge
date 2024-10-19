@@ -1,7 +1,7 @@
 use std::iter::repeat;
 
 use crate::{
-    communicator::{group::Group, GroupId},
+    communicator::{GroupId, ThresholdGroup},
     cryptoki::bindings::{
         CKF_TOKEN_INITIALIZED, CKF_TOKEN_PRESENT, CK_CHAR, CK_FLAGS, CK_SLOT_INFO, CK_TOKEN_INFO,
         CK_VERSION,
@@ -111,8 +111,8 @@ impl MeesignToken {
     }
 }
 
-impl From<Group> for MeesignToken {
-    fn from(value: Group) -> Self {
+impl From<ThresholdGroup> for MeesignToken {
+    fn from(value: ThresholdGroup) -> Self {
         Self {
             name: value.get_name().into(),
             group_id: value.get_group_id().to_owned(),

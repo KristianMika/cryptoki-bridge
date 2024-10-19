@@ -5,7 +5,7 @@ use std::{
 
 use crate::cryptoki::bindings::{CK_SLOT_ID, CK_SLOT_INFO, CK_TOKEN_INFO};
 
-use super::token::Token;
+use super::Token;
 
 pub(crate) type TokenStore = Arc<RwLock<dyn Token>>;
 

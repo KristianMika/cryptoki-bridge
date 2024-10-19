@@ -4,8 +4,7 @@ use std::{
 };
 
 use crate::{
-    communicator::group::Group, cryptoki_error::CryptokiError, state::token::MeesignToken,
-    state::StateAccessor,
+    communicator::ThresholdGroup, state::MeesignToken, state::StateAccessor, CryptokiError,
 };
 
 use super::bindings::{
@@ -50,7 +49,7 @@ pub unsafe fn C_GetSlotList(
 
     let slot_list: Result<Vec<CK_SLOT_ID>, CryptokiError> = groups
         .into_iter()
-        .map(|group: Group| group.into())
+        .map(|group: ThresholdGroup| group.into())
         .map(|token: MeesignToken| Arc::new(RwLock::new(token)))
         .map(|token| state_accessor.insert_token(token))
         .collect();

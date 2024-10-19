@@ -1,6 +1,6 @@
 use derive_new::new;
 
-use super::template::Template;
+use super::Template;
 
 #[derive(new)]
 pub(crate) struct ObjectSearch {

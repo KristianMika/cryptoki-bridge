@@ -15,7 +15,7 @@ use super::{
     utils::FromPointer,
 };
 use crate::state::{
-    object::{template::Template, CryptokiObject},
+    object::{CryptokiObject, Template},
     StateAccessor,
 };
 
