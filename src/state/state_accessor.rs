@@ -69,7 +69,7 @@ impl StateAccessor {
         &self,
         session_handle: &CK_SESSION_HANDLE,
         object_handle: &CK_OBJECT_HANDLE,
-    ) -> Result<Arc<dyn CryptokiObject>, CryptokiError> {
+    ) -> Result<Arc<CryptokiObject>, CryptokiError> {
         let sessions = SESSIONS.read()?;
         let session = sessions
             .as_ref()
@@ -300,7 +300,7 @@ impl StateAccessor {
     pub(crate) fn create_object(
         &self,
         session_handle: &CK_SESSION_HANDLE,
-        object: Arc<dyn CryptokiObject>,
+        object: Arc<CryptokiObject>,
     ) -> Result<CK_OBJECT_HANDLE, CryptokiError> {
         let mut sessions = SESSIONS.write()?;
         let session = sessions
@@ -314,7 +314,7 @@ impl StateAccessor {
     pub(crate) fn create_ephemeral_object(
         &self,
         session_handle: &CK_SESSION_HANDLE,
-        object: Arc<dyn CryptokiObject>,
+        object: Arc<CryptokiObject>,
     ) -> Result<CK_OBJECT_HANDLE, CryptokiError> {
         let mut sessions = SESSIONS.write()?;
         let session = sessions
@@ -329,7 +329,7 @@ impl StateAccessor {
         &self,
         session_handle: &CK_SESSION_HANDLE,
         object_handle: &CK_OBJECT_HANDLE,
-    ) -> Result<Arc<dyn CryptokiObject>, CryptokiError> {
+    ) -> Result<Arc<CryptokiObject>, CryptokiError> {
         let mut sessions = SESSIONS.write()?;
         let session = sessions
             .as_mut()

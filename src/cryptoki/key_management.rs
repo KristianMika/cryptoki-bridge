@@ -15,10 +15,7 @@ use super::{
     utils::FromPointer,
 };
 use crate::state::{
-    object::{
-        cryptoki_object::CryptokiObject, private_key_object::PrivateKeyObject,
-        secret_key_object::SecretKeyObject, template::Template,
-    },
+    object::{template::Template, CryptokiObject},
     StateAccessor,
 };
 
@@ -56,7 +53,7 @@ pub unsafe fn C_GenerateKey(
     }
     let template = unsafe { Vec::from_pointer(pTemplate, ulCount as usize) };
     let template = Template::from(template);
-    let mut object = SecretKeyObject::from_template(template);
+    let mut object = CryptokiObject::from_template(template);
 
     let key: [u8; 16] = OsRng.gen();
     object.store_value(key.into());
@@ -232,7 +229,7 @@ pub unsafe fn C_UnwrapKey(
 
     let attributes = unsafe { Vec::from_pointer(pTemplate, ulAttributeCount as usize) };
     let template = Template::from(attributes);
-    let mut private_key_object = PrivateKeyObject::from_template(template);
+    let mut private_key_object = CryptokiObject::from_template(template);
     private_key_object.store_value(plaintext);
 
     let handle =

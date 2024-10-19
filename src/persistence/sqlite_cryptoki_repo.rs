@@ -59,13 +59,13 @@ impl SqliteCryptokiRepo {
         &self,
         label: Option<AttributeValue>,
         class: Option<ObjectClass>,
-    ) -> Result<Vec<Arc<dyn CryptokiObject>>, PersistenceError> {
+    ) -> Result<Vec<Arc<CryptokiObject>>, PersistenceError> {
         let connection = &self.connection.lock()?;
         let mut statement = connection
             .prepare("SELECT id, class, label, serialized_attributes FROM objects WHERE (:label IS NULL OR label = :label) AND (:class IS NULL or class = :class)")?;
         let rows = statement.query_map(
             named_params! {":label":label, ":class":class.map(|x| x as i32)},
-            |row| -> Result<Arc<dyn CryptokiObject>, rusqlite::Error> {
+            |row| -> Result<Arc<CryptokiObject>, rusqlite::Error> {
                 let object_model = ObjectModel::from_row(row)?;
                 Ok(object_model.into())
             },
@@ -77,7 +77,7 @@ impl SqliteCryptokiRepo {
 }
 
 impl CryptokiRepo for SqliteCryptokiRepo {
-    fn store_object(&self, object: Arc<dyn CryptokiObject>) -> Result<Uuid, PersistenceError> {
+    fn store_object(&self, object: Arc<CryptokiObject>) -> Result<Uuid, PersistenceError> {
         let connection = &self.connection.lock()?;
         let mut statement = connection.prepare(
             "INSERT INTO objects (id, class, label, serialized_attributes) VALUES (?1, ?2, ?3, ?4)",
@@ -96,7 +96,7 @@ impl CryptokiRepo for SqliteCryptokiRepo {
     fn destroy_object(
         &self,
         object_id: Uuid,
-    ) -> Result<Option<Arc<dyn CryptokiObject>>, PersistenceError> {
+    ) -> Result<Option<Arc<CryptokiObject>>, PersistenceError> {
         let connection = self.connection.lock()?;
         let mut statement = connection.prepare(
             "DELETE FROM objects WHERE id = ?1 RETURNING id, class, label, serialized_attributes;",
@@ -107,10 +107,7 @@ impl CryptokiRepo for SqliteCryptokiRepo {
         Ok(Some(object_model.into()))
     }
 
-    fn get_object(
-        &self,
-        object_id: Uuid,
-    ) -> Result<Option<Arc<dyn CryptokiObject>>, PersistenceError> {
+    fn get_object(&self, object_id: Uuid) -> Result<Option<Arc<CryptokiObject>>, PersistenceError> {
         let connection = self.connection.lock()?;
         let mut statement = connection.prepare("SELECT * FROM objects WHERE id = ?1;")?;
 
@@ -129,7 +126,7 @@ impl CryptokiRepo for SqliteCryptokiRepo {
     fn get_objects(
         &self,
         object_search: &ObjectSearch,
-    ) -> Result<Vec<Arc<dyn CryptokiObject>>, PersistenceError> {
+    ) -> Result<Vec<Arc<CryptokiObject>>, PersistenceError> {
         let filter_label = object_search
             .get_template()
             .get_attributes()

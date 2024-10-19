@@ -18,8 +18,6 @@ use crate::{
             attribute::Attribute,
             cryptoki_object::{AttributeValue, CryptokiObject},
             object_search::ObjectSearch,
-            private_key_object::PrivateKeyObject,
-            public_key_object::PublicKeyObject,
             template::Template,
         },
         slots::TokenStore,
@@ -57,20 +55,17 @@ pub(crate) struct Session {
     key_pair: Option<(CK_OBJECT_HANDLE, CK_OBJECT_HANDLE)>,
 
     cryptoki_repo: Arc<dyn CryptokiRepo>,
-    ephemeral_objects: HashMap<Uuid, Arc<dyn CryptokiObject>>,
+    ephemeral_objects: HashMap<Uuid, Arc<CryptokiObject>>,
 }
 
 #[derive(Clone)]
 pub(crate) struct Signer {
-    pub key: Arc<dyn CryptokiObject>,
+    pub key: Arc<CryptokiObject>,
     pub response: Option<AuthResponse>,
     pub auth_request_originator: Option<String>,
 }
 impl Signer {
-    pub(crate) fn new(
-        key: Arc<dyn CryptokiObject>,
-        auth_request_originator: Option<String>,
-    ) -> Self {
+    pub(crate) fn new(key: Arc<CryptokiObject>, auth_request_originator: Option<String>) -> Self {
         Self {
             key,
             response: None,
@@ -122,13 +117,13 @@ impl Session {
 
     pub fn create_object(
         &mut self,
-        object: Arc<dyn CryptokiObject>,
+        object: Arc<CryptokiObject>,
     ) -> Result<CK_OBJECT_HANDLE, PersistenceError> {
         let object_id = self.cryptoki_repo.store_object(object)?;
         Ok(self.handle_resolver.get_or_insert_object_handle(object_id))
     }
 
-    pub fn create_ephemeral_object(&mut self, object: Arc<dyn CryptokiObject>) -> CK_OBJECT_HANDLE {
+    pub fn create_ephemeral_object(&mut self, object: Arc<CryptokiObject>) -> CK_OBJECT_HANDLE {
         let id = *object.get_id();
         self.ephemeral_objects.insert(id, object);
         self.handle_resolver.get_or_insert_object_handle(id)
@@ -137,7 +132,7 @@ impl Session {
     pub fn destroy_object(
         &mut self,
         object_handle: &CK_OBJECT_HANDLE,
-    ) -> Result<Option<Arc<dyn CryptokiObject>>, PersistenceError> {
+    ) -> Result<Option<Arc<CryptokiObject>>, PersistenceError> {
         let Some(object_id) = self.handle_resolver.destroy_object_mapping(*object_handle) else {
             return Ok(None);
         };
@@ -151,7 +146,7 @@ impl Session {
     pub(crate) fn get_object(
         &self,
         object_handle: CK_OBJECT_HANDLE,
-    ) -> Result<Option<Arc<dyn CryptokiObject>>, PersistenceError> {
+    ) -> Result<Option<Arc<CryptokiObject>>, PersistenceError> {
         let Some(object_id) = self.handle_resolver.get_object_id(object_handle) else {
             return Ok(None);
         };
@@ -230,11 +225,11 @@ impl Session {
         token_label: String,
     ) -> (CK_OBJECT_HANDLE, CK_OBJECT_HANDLE) {
         let pubkey_template = get_communicator_public_key_template(&token_label, pubkey.clone());
-        let pubkey_object = PublicKeyObject::from_template(pubkey_template);
+        let pubkey_object = CryptokiObject::from_template(pubkey_template);
         let pubkey_handle = self.create_ephemeral_object(Arc::new(pubkey_object));
 
         let private_key_template = get_communicator_private_key_template(&token_label, pubkey);
-        let private_key = PrivateKeyObject::from_template(private_key_template);
+        let private_key = CryptokiObject::from_template(private_key_template);
         let private_key_handle = self.create_ephemeral_object(Arc::new(private_key));
 
         (private_key_handle, pubkey_handle)

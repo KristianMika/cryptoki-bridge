@@ -55,7 +55,7 @@ impl ObjectModel {
 // because of the orphan rule.
 
 pub(crate) fn try_object_model_from_cryptoki_object(
-    value: Arc<dyn CryptokiObject>,
+    value: Arc<CryptokiObject>,
 ) -> Result<ObjectModel, PersistenceError> {
     let class = try_object_class_from_cryptoki_object(&value)?;
     let label = value.get_attribute(CKA_LABEL as CK_ATTRIBUTE_TYPE);
@@ -65,7 +65,7 @@ pub(crate) fn try_object_model_from_cryptoki_object(
 }
 
 pub(crate) fn try_object_class_from_cryptoki_object(
-    value: &Arc<dyn CryptokiObject>,
+    value: &Arc<CryptokiObject>,
 ) -> Result<ObjectClass, PersistenceError> {
     let class = CK_ATTRIBUTE_TYPE::from_le_bytes(to_fixed_size_array(
         value.get_attribute(CKA_CLASS as CK_ATTRIBUTE_TYPE).ok_or(

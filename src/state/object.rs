@@ -1,9 +1,7 @@
 pub(crate) mod attribute;
-pub(crate) mod cryptoki_object;
-pub(crate) mod data_object;
+pub mod cryptoki_object;
 pub(crate) mod object_class;
 pub(crate) mod object_search;
-pub(crate) mod private_key_object;
-pub(crate) mod public_key_object;
-pub(crate) mod secret_key_object;
 pub(crate) mod template;
+
+pub(crate) use cryptoki_object::CryptokiObject;
