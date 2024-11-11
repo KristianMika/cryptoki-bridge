@@ -10,6 +10,8 @@ mod group;
 pub(crate) mod meesign;
 #[cfg(all(feature = "mocked_ecdsa_communicator", debug_assertions))]
 pub(crate) mod mocked_ecdsa_communicator;
+#[cfg(all(feature = "mocked_eddsa_communicator", debug_assertions))]
+pub(crate) mod mocked_eddsa_communicator;
 pub(crate) mod task_name_provider;
 
 type ByteVector = Vec<u8>;
@@ -17,6 +19,12 @@ pub(crate) type AuthResponse = ByteVector;
 pub(crate) type GroupId = ByteVector;
 pub(crate) type TaskId = ByteVector;
 pub(crate) type RequestData = ByteVector;
+
+#[cfg(all(
+    feature = "mocked_ecdsa_communicator",
+    feature = "mocked_eddsa_communicator"
+))]
+compile_error!("You can have at most one type of mocked communicator.");
 
 /// Communicates with a remote communicator, e.g., MeeSign server
 // TODO: remove macro once rust 1.74 is released
