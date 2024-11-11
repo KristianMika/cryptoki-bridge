@@ -30,7 +30,7 @@ impl Sessions {
     }
 
     pub(crate) fn create_session(&mut self, token: TokenStore) -> CK_SESSION_HANDLE {
-        let new_session_state = Session::new(token, self.cryptoki_repo.clone());
+        let new_session_state = Session::new(token, Arc::clone(&self.cryptoki_repo));
         let mut session_handle = self.generate_session_handle();
         while self.sessions.contains_key(&session_handle) {
             session_handle = self.generate_session_handle();
