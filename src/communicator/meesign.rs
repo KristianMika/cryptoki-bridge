@@ -5,7 +5,7 @@ use tonic::{
     transport::{Certificate, Channel, ClientTlsConfig, Uri},
 };
 
-use std::{str::FromStr, time::Duration};
+use std::{mem::transmute, str::FromStr, time::Duration};
 
 use crate::communicator::meesign::proto::{mee_sign_client::MeeSignClient, GroupsRequest, KeyType};
 use crate::communicator::AuthResponse;
@@ -13,7 +13,7 @@ use crate::communicator::AuthResponse;
 use self::proto::{task::TaskState, SignRequest, TaskRequest};
 use super::{
     communicator_error::CommunicatorError, group::Group, task_name_provider::TaskNameProvider,
-    Communicator, GroupId, RequestData, TaskId,
+    Communicator, GroupId, ProtocolType, RequestData, TaskId,
 };
 
 mod proto {
@@ -58,7 +58,7 @@ impl Communicator for Meesign {
         let groups = proto_groups
             .into_iter()
             .filter(|group| group.key_type == KeyType::SignChallenge as i32)
-            .map(|group| Group::new(group.identifier, group.name))
+            .map(Into::into)
             .collect();
         Ok(groups)
     }
@@ -114,5 +114,28 @@ fn extract_auth_response(task: Task) -> Result<AuthResponse, CommunicatorError> 
     match task.data.into_iter().next() {
         Some(val) => Ok(val),
         None => Err(CommunicatorError::ResponseNotPresent),
+    }
+}
+
+impl From<proto::ProtocolType> for ProtocolType {
+    fn from(value: proto::ProtocolType) -> Self {
+        match value {
+            proto::ProtocolType::Gg18 => Self::GG18,
+            proto::ProtocolType::Elgamal => Self::ElGamal,
+            proto::ProtocolType::Frost => Self::FROST,
+        }
+    }
+}
+
+impl From<proto::Group> for Group {
+    fn from(value: proto::Group) -> Self {
+        let proto::Group {
+            identifier,
+            name,
+            protocol,
+            ..
+        } = value;
+        let protocol: proto::ProtocolType = unsafe { transmute(protocol) };
+        Group::new(identifier, name, protocol.into())
     }
 }

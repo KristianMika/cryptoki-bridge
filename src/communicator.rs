@@ -4,6 +4,7 @@ use group::Group;
 
 pub(crate) use communicator_error::CommunicatorError;
 pub(crate) use group::Group as ThresholdGroup;
+pub(crate) use protocol_type::ProtocolType;
 
 mod communicator_error;
 mod group;
@@ -12,6 +13,7 @@ pub(crate) mod meesign;
 pub(crate) mod mocked_ecdsa_communicator;
 #[cfg(all(feature = "mocked_eddsa_communicator", debug_assertions))]
 pub(crate) mod mocked_eddsa_communicator;
+mod protocol_type;
 pub(crate) mod task_name_provider;
 
 type ByteVector = Vec<u8>;

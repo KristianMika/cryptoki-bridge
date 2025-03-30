@@ -5,7 +5,7 @@ use openssl::hash::Hasher;
 use uuid::Uuid;
 
 use crate::{
-    communicator::{AuthResponse, GroupId},
+    communicator::{AuthResponse, GroupId, ProtocolType},
     cryptoki::bindings::{
         CKA_ALWAYS_AUTHENTICATE, CKA_CLASS, CKA_EC_PARAMS, CKA_EC_POINT, CKA_ID, CKA_KEY_TYPE,
         CKA_LABEL, CKA_VALUE, CKK_ECDSA, CKO_PRIVATE_KEY, CKO_PUBLIC_KEY, CK_FALSE,
@@ -72,6 +72,7 @@ impl Session {
         // TODO: refactor
         let pubkey: GroupId = token.read().unwrap().get_public_key().into();
         let token_label: String = token.read().unwrap().get_label().into();
+        let token_protocol_type = *token.read().unwrap().get_key_type();
         let mut session = Self {
             hasher: None,
             object_search: None,
@@ -85,7 +86,8 @@ impl Session {
             ephemeral_objects: HashMap::new(),
         };
 
-        session.key_pair = Some(session.create_communicator_keypair(pubkey, token_label));
+        session.key_pair =
+            Some(session.create_communicator_keypair(pubkey, token_label, &token_protocol_type));
         session
     }
     pub fn get_keypair(&self) -> (CK_OBJECT_HANDLE, CK_OBJECT_HANDLE) {
@@ -217,8 +219,10 @@ impl Session {
         &mut self,
         pubkey: GroupId,
         token_label: String,
+        protocol_type: &ProtocolType,
     ) -> (CK_OBJECT_HANDLE, CK_OBJECT_HANDLE) {
-        let pubkey_template = get_communicator_public_key_template(&token_label, pubkey.clone());
+        let pubkey_template =
+            get_communicator_public_key_template(&token_label, pubkey.clone(), protocol_type);
         let pubkey_object = CryptokiObject::from_template(pubkey_template);
         let pubkey_handle = self.create_ephemeral_object(Arc::new(pubkey_object));
 
@@ -246,7 +250,12 @@ fn get_communicator_common_key_attributes(
     ]
 }
 
-fn get_communicator_public_key_template(token_label: &str, public_key: AttributeValue) -> Template {
+fn get_communicator_public_key_template(
+    token_label: &str,
+    public_key: AttributeValue,
+    protocol_type: &ProtocolType,
+) -> Template {
+    protocol_type.get_attributes();
     let mut common_attributes =
         get_communicator_common_key_attributes(token_label, public_key.clone());
     let ec_params = hex::decode(NIST_P256_EC_PARAMS_DER_HEX).unwrap();

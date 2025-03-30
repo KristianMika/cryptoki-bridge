@@ -1,7 +1,7 @@
 use std::iter::repeat;
 
 use crate::{
-    communicator::{GroupId, ThresholdGroup},
+    communicator::{GroupId, ProtocolType, ThresholdGroup},
     cryptoki::bindings::{
         CKF_TOKEN_INITIALIZED, CKF_TOKEN_PRESENT, CK_CHAR, CK_FLAGS, CK_SLOT_INFO, CK_TOKEN_INFO,
         CK_VERSION,
@@ -17,15 +17,17 @@ pub(crate) trait Token: Sync + Send {
 
     fn get_public_key(&self) -> &[u8];
 
+    fn get_key_type(&self) -> &ProtocolType;
+
     fn get_label(&self) -> &str;
 
     fn get_slot_info(&self) -> CK_SLOT_INFO;
 }
 
-#[derive(Default)]
 pub(crate) struct MeesignToken {
     group_id: GroupId,
     name: String,
+    group_type: ProtocolType,
 }
 
 impl Token for MeesignToken {
@@ -70,6 +72,10 @@ impl Token for MeesignToken {
 
     fn get_label(&self) -> &str {
         &self.name
+    }
+
+    fn get_key_type(&self) -> &ProtocolType {
+        &self.group_type
     }
 }
 
@@ -116,6 +122,7 @@ impl From<ThresholdGroup> for MeesignToken {
         Self {
             name: value.get_name().into(),
             group_id: value.get_group_id().to_owned(),
+            group_type: *value.get_group_type(),
         }
     }
 }
